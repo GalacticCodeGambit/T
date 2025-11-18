@@ -26,5 +26,5 @@ volumes:
   data:
 
 #networks:
-#  default:
+#  default
 #    driver: custom-drive

@@ -5,7 +5,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
       - name: Build the stack
-        run: docker-compose -f /project/compose.yaml build
+        run: docker-compose -f ./project/compose.yaml build
+
+              # 4. Container starten
+      - name: Start services
+        run: docker-compose -f ./project/compose.yaml up -d
+
+      # 5. Healthcheck / Test
+      - name: Run tests
+        run: |
+          docker ps
+          curl -s --retry 10 --retry-connrefused http://localhost:5000/
       - name: Test
         run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:5000/

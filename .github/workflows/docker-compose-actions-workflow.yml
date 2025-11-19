@@ -24,21 +24,21 @@ jobs:
 #      - name: Test
 #        run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8000/
 
-- name: Wait for frontend on :8000
-  run: |
-    PORT=8000
-    for i in $(seq 1 30); do
-      if curl -fsSL --retry-all-errors --retry 0 "http://localhost:${PORT}/" >/dev/null 2>&1; then
-        echo "ready"
-        exit 0
-      fi
-      echo "waiting... ($i)"
-      sleep 3
-    done
-    echo "service not ready" >&2
-    docker-compose -f project/compose.yaml ps || true
-    docker-compose -f project/compose.yaml logs || true
-    exit 1
+      - name: Wait for frontend on :8000
+        run: |
+           PORT=8000
+            for i in $(seq 1 30); do
+              if curl -fsSL --retry-all-errors --retry 0 "http://localhost:${PORT}/" >/dev/null 2>&1; then
+                echo "ready"
+                exit 0
+              fi
+              echo "waiting... ($i)"
+              sleep 3
+           done
+           echo "service not ready" >&2
+           docker-compose -f project/compose.yaml ps || true
+           docker-compose -f project/compose.yaml logs || true
+           exit 1
 
-- name: Smoke test
-  run: curl -fsSL -o /dev/null http://localhost:8000/
+      - name: Smoke test
+        run: curl -fsSL -o /dev/null http://localhost:8000/

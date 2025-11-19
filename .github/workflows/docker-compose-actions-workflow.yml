@@ -22,4 +22,4 @@ jobs:
           docker ps
           curl -s --retry 10 --retry-connrefused http://localhost:8000/
       - name: Test
-        run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:5000/
+        run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8000/

@@ -1,7 +1,7 @@
 name: Docker Compose Actions Workflow
 on: push
 jobs:
-  ci:
+  start_service:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,29 +17,29 @@ jobs:
         run: docker-compose -f Project/compose.yaml up -d
 
       # 5. Healthcheck / Test
-      - name: Run tests
-        run: |
-          docker ps
-          sleep 20
-          curl -s --retry 10 --retry-connrefused http://localhost:8000/
-      - name: Test
-        run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8000/
-
-#      - name: Wait for frontend on :8000
+#      - name: Run tests
 #        run: |
-#           PORT=8000
-#            for i in $(seq 1 30); do
-#              if curl -fsSL --retry-all-errors --retry 0 "http://localhost:${PORT}/" >/dev/null 2>&1; then
-#                echo "ready"
-#                exit 0
-#              fi
-#              echo "waiting... ($i)"
-#              sleep 30
-#           done
-#           echo "service not ready" >&2
-#           docker-compose -f project/compose.yaml ps || true
-#           docker-compose -f project/compose.yaml logs || true
-#           exit 1
+#          docker ps
+#          sleep 20
+#          curl -s --retry 10 --retry-connrefused http://localhost:8000/
+#      - name: Test
+#        run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8000/
 
-#      - name: Smoke test
-#        run: curl -fsSL -o /dev/null http://localhost:8000/
+      - name: Wait for frontend on :8000
+        run: |
+           PORT=8000
+            for i in $(seq 1 30); do
+              if curl -fsSL --retry-all-errors --retry 0 "http://localhost:${PORT}/" >/dev/null 2>&1; then
+                echo "ready"
+                exit 0
+              fi
+              echo "waiting... ($i)"
+              sleep 30
+           done
+           echo "service not ready" >&2
+           docker-compose -f project/compose.yaml ps || true
+           docker-compose -f project/compose.yaml logs || true
+           exit 1
+
+      - name: Smoke test
+        run: curl -fsSL -o /dev/null http://localhost:8000/

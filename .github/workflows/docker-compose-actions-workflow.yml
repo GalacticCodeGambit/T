@@ -20,6 +20,7 @@ jobs:
       - name: Run tests
         run: |
           docker ps
+          sleep 5
           curl -s --retry 10 --retry-connrefused http://localhost:8000/
       - name: Test
         run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8000/

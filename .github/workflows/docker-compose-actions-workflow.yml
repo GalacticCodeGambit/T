@@ -33,7 +33,7 @@ jobs:
                 exit 0
               fi
               echo "waiting... ($i)"
-              sleep 3
+              sleep 300
            done
            echo "service not ready" >&2
            docker-compose -f project/compose.yaml ps || true

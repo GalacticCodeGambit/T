@@ -27,19 +27,21 @@ jobs:
 
       - name: Wait for frontend on :8000
         run: |
-           PORT=8000
-            for i in $(seq 1 30); do
-              if curl -fsSL --retry-all-errors --retry 0 "http://localhost:${PORT}/" >/dev/null 2>&1; then
-                echo "ready"
-                exit 0
-              fi
-              echo "waiting... ($i)"
-              sleep 30
-           done
-           echo "service not ready" >&2
-           docker-compose -f project/compose.yaml ps || true
-           docker-compose -f project/compose.yaml logs || true
-           exit 1
+          PORT=8000
+          attempts=30
+          wait_seconds=3
+          for i in $(seq 1 $attempts); do
+             if curl -fsSL --retry-all-errors --retry 0 "http://localhost:${PORT}/" >/dev/null 2>&1; then
+               echo "ready"
+               exit 0
+             fi
+             echo "waiting... ($i)"
+             sleep $wait_seconds
+          done
+          echo "service not ready" >&2
+          docker-compose -f project/compose.yaml ps || true
+          docker-compose -f project/compose.yaml logs || true
+          exit 1
 
       - name: Smoke test
         run: curl -fsSL -o /dev/null http://localhost:8000/
